@@ -1,0 +1,23 @@
+root = true
+
+[*]
+# Estilo de Indentação - space ou tab
+indent_style = space
+
+# Tamanho do recuo (em caracteres com espaçamento simples)
+indent_size = 2
+
+# Formato de arquivo de final de linha
+end_of_line = lf
+
+# Codificação de caracteres do arquivo
+charset = utf-8
+
+# Indica se o espaço em branco é removido do final das linhas
+trim_trailing_whitespace = true
+
+# Indica se o arquivo deve terminar com uma nova linha
+# insert_final_newline = true
+
+# Largura de um único caractere de tabulação
+# tab_width = 1
