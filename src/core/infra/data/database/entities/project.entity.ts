@@ -6,10 +6,14 @@ import {
     Column,
     JoinColumn,
     ManyToOne,
-    PrimaryColumn
+    OneToMany,
+    PrimaryColumn,
+    OneToOne
 } from "typeorm";
 import { v4 as uuid } from 'uuid';
 import { UserEntity } from "./user.entity";
+import { ProjectsRateEntity } from "./projects-rate.entity";
+import { TaskEntity } from "./task.entity";
 
 @Entity({name: 'projects'})
 export class ProjectEntity extends BaseEntity {
@@ -40,6 +44,12 @@ export class ProjectEntity extends BaseEntity {
     @ManyToOne(_ => UserEntity, user => user.projects)
     @JoinColumn({name: 'user_uid', referencedColumnName: 'uid'})
     user!: UserEntity;
+
+    @OneToOne(_ => ProjectsRateEntity, projectRate => projectRate.user)
+    projectRate?: ProjectsRateEntity
+
+    @OneToMany(_ => TaskEntity, task => task.project)
+    tasks?: TaskEntity[];
 
     @BeforeInsert()
     private beforeInsert() {

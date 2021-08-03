@@ -1,30 +1,30 @@
 import { HttpRequest, HttpResponse } from '../../../../core/presentation';
 import { notFound, ok, serverError } from '../../../../core/presentation';
 import { MVCController } from '../../../../core/presentation';
-import { ProjectRepository } from '../../infra';
+import { TaskRepository } from '../../infra';
 import { CacheRepository } from '../../infra';
 
-export class ProjectController implements MVCController {
-    readonly #repository: ProjectRepository;
+export class TaskController implements MVCController {
+    readonly #repository: TaskRepository;
     readonly #cache: CacheRepository;
 
-    constructor(repository: ProjectRepository, cache: CacheRepository) {
+    constructor(repository: TaskRepository, cache: CacheRepository) {
         this.#repository = repository;
         this.#cache = cache;
     }
 
     public async index(request: HttpRequest): Promise<HttpResponse> {
         try {
-            const cache = await this.#cache.get('project:all');
+            const cache = await this.#cache.get('task:all');
 
             if (cache) {
                 return ok(cache);
             }
             
-            const projects = await this.#repository.getAll();
-            await this.#cache.set('project:all', projects);
+            const tasks = await this.#repository.getAll();
+            await this.#cache.set('task:all', tasks);
             
-            return ok(projects);
+            return ok(tasks);
         } catch (error) {
             return serverError();
         }
@@ -33,21 +33,21 @@ export class ProjectController implements MVCController {
     public async show(request: HttpRequest): Promise<HttpResponse> {
         try {
             const { uid } = request.params;
-            const cache = await this.#cache.get(`project:${uid}`);
+            const cache = await this.#cache.get(`task:${uid}`);
 
             if (cache) {
                 return ok(cache);
             }
 
-            const project = await this.#repository.getOne(uid);
+            const task = await this.#repository.getOne(uid);
             
-            if (!project) {
+            if (!task) {
                 return notFound();
             }
 
-            await this.#cache.set(`project:${uid}`, project);
+            await this.#cache.set(`task:${uid}`, task);
 
-            return ok(project);
+            return ok(task);
         } catch (error) {
             return serverError();
         }
@@ -55,8 +55,8 @@ export class ProjectController implements MVCController {
 
     public async store(request: HttpRequest): Promise<HttpResponse> {
         try {
-            const project = await this.#repository.create(request.body);
-            return ok(project);
+            const task = await this.#repository.create(request.body);
+            return ok(task);
         } catch (error) {
             return serverError();
         }
@@ -65,11 +65,11 @@ export class ProjectController implements MVCController {
     public async  update(request: HttpRequest): Promise<HttpResponse> {
         try {
             const { uid } = request.params;
-            const project = await this.#repository.update(uid, request.body);
+            const task = await this.#repository.update(uid, request.body);
 
-            await this.#cache.set(`project:${uid}`, project);
+            await this.#cache.set(`task:${uid}`, task);
 
-            return ok(project);
+            return ok(task);
         } catch (error) {
             return serverError();
         }
@@ -80,7 +80,7 @@ export class ProjectController implements MVCController {
             const { uid } = request.params;
             await this.#repository.delete(uid);
 
-            await this.#cache.del(`project:${uid}`);
+            await this.#cache.del(`task:${uid}`);
 
             return ok({});
         } catch (error) {

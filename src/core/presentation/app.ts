@@ -1,6 +1,8 @@
-import express, { Router } from 'express';
+import express, { Router, Request, Response } from 'express';
 import cors from 'cors';
 import ProjectRoutes from '../../features/projects/presentation/routes/routes';
+import ProjectsRateRoutes from '../../features/projects_rate/presentation/routes/routes';
+import TaskRoutes from '../../features/tasks/presentation/routes/routes';
 
 export default class App {
     readonly #express: express.Application;
@@ -32,7 +34,14 @@ export default class App {
     private routes() {
         const router = Router();
 
+        this.#express.get('/', (_: Request, response: Response) => response.redirect('/api'));
+        this.#express.use('/api', router);
+
+        router.get('/', (_: Request, response: Response) => response.send('API rodando...'));
+
         new ProjectRoutes().init(router);
+        new ProjectsRateRoutes().init(router);
+        new TaskRoutes().init(router);
     }
 
     public start(port: number) {
